@@ -1,1 +1,15 @@
-<p>worldnews works!</p>
+<div class="row">
+  <div class="col-sm-6">
+    <h3>{{user.displayName}}</h3>
+  </div> 
+    <div class="col-sm-6 text-right">
+      <button class="btn btn-danger" (click)="covidservice.signOut()">Sign out</button>
+    </div>
+  <div class="row mb-3">
+    <div class="col-12">
+      <label for="descriptionInput"> Latest News </label>
+      <input type="text" id="descriptionInput" required [(ngModel)]="description" name="descriptionInput" class="form-control"
+      placeholder="add some exciting news">
+    </div>
+  </div>
+  <button [disabled]="description.length == 0" class="btn btn-primary" (click)="addNews()">Add</button>
