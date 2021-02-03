@@ -8,6 +8,7 @@ import { Subscription, SubscriptionLike } from 'rxjs';
 import { ChartType, ChartOptions, ChartDataSets } from 'chart.js';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { SingleDataSet, Label, monkeyPatchChartJsLegend, monkeyPatchChartJsTooltip, Color } from 'ng2-charts';
+//import { WorldnewsComponent } from './../worldnews/worldnews.component';
 interface Food {
   value: string;
   viewValue: string;
@@ -185,7 +186,7 @@ export class WorldcountComponent implements OnInit {
       console.log(this.news);
     });
     this.getprivilegeUsers()
-    .subscribe(users=>{
+    .subscribe((users: string[])=>{
       console.log(users)
       if (users == undefined){
         this.privilegeuser=false;
@@ -195,7 +196,6 @@ export class WorldcountComponent implements OnInit {
       console.log(this.privilegeuser)
     });
   }
-
 getSummaryData(country){
   return this.firestore.collection("summary").doc(country).valueChanges();
 }
@@ -214,26 +214,12 @@ sort_by_key_name(array, key, dir)
   return ((x > y) ? -1 : ((x < y) ? 1 : 0));
  });
 }
-changeNewsCountry(country){
-this.country_news = country;
-}
-addNews(){
-  let news: News = {
-    date: new Date(),
-    description: this .description,
-    username: this.user.displayName,
-    uid:this.user.uid,
-    country: this.country_news
-  };
-  this.firestore.collection("news").doc("news").collection(this.country_news).add(news);
-  this.description ="";
-}
 getNews(){
   return this.firestore.collection("news").doc("news").
     collection("world").valueChanges();
 }
 getprivilegeUsers(){
-  return this.firestore.collection("super_users").valueChanges();
+  return this.firestore.collection("privilege_users").doc(this.user.email).valueChanges();
 }
  sort_by_key_values(array, key, dir,index) 
 {
@@ -274,5 +260,8 @@ sort(direction,col){
 }
 go_to_country(country){
   this.router.navigate(["count-by-country/"+country]);
+}
+gotoworldnews(){
+  this.router.navigate(["worldnews"]);
 }
 }
