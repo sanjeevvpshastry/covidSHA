@@ -111,31 +111,7 @@
       </tbody>
     </table>
   </div>
-  
-  <div *ngIf="privilegeuser" id="add_news_div">
-    <h4>Add news</h4>
-  
-    <mat-form-field appearance="fill">
-      <mat-label>Country</mat-label>
-      <mat-select name="world" (selectionChange)="changeNewsCountry($event.value)">
-        <mat-option value="world">
-          World
-        </mat-option>
-        <mat-option *ngFor="let country of countries" [value]="country.values[6]">
-          {{country.name}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field> (value is World by default)
-  <div class="row mb-3">
-    <div class="col-12">
-      <label for="descriptionInput"> Latest News </label>
-      <input type="text" id="descriptionInput" required [(ngModel)]="description" name="descriptionInput" class="form-control"
-      placeholder="What news do you want to add?">
-    </div>
-  </div>
-  <button [disabled]="description.length == 0" class="btn btn-primary" (click)="addNews()">Add</button>
-  
-  </div>
+  <button class="btn btn-success pull-right" *ngIf="privilegeuser" (click)="gotoworldnews()">Add news</button> 
   <h4>News Today</h4>
   <div class="my-3" *ngIf="news.length > 0">
     <table class="table table-bordered table-striped">
