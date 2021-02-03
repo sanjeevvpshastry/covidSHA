@@ -57,17 +57,17 @@ export class WorldcountComponent implements OnInit {
   public pieChartPlugins = [];
 
   user: User;
-  description: string="";
+  detail: string="";
   cases: {name: String, value: number}[]
   recovered: {name: String, value: number}[]
   deaths: {name: String, value: number}[]
   countries: {name: String, values: number[]}[] =[]
   countriesAdded: {name: String, values: number[]}[]
-  tableCountriesHead = ["New Cases","Total Cases","New Recoveries","Total Recoveries","New Deaths","Total Deaths"];
-  summarySubscription: Subscription;
-  summaryFromSubscription: Subscription;
-  summary7daysSubscription: Subscription;
-  countriesSubscription: Subscription;
+  CountriestableHead = ["New Cases","Total Cases","New Recoveries","Total Recoveries","New Deaths","Total Deaths"];
+  sumSub: Subscription;
+  sumFromSub: Subscription;
+  sum7daysSub: Subscription;
+  countriesSub: Subscription;
   summary: Summary;
   privilegeuser = false;
   num_times = 0;
@@ -81,12 +81,12 @@ export class WorldcountComponent implements OnInit {
 
   ngOnInit(): void {
     this.user = this.covidservice.getUser();
-    this.countriesSubscription = this.covidservice.countriesSubject.subscribe(
+    this.countriesSub = this.covidservice.countriesSub.subscribe(
       (data: {name: string, values:number[]}[]) => {
         this.countries = data;
       }
     )
-   this.summarySubscription = this.covidservice.summarySubject.subscribe(
+   this.sumSub = this.covidservice.sumsub.subscribe(
       (data: number[]) => {
         if(data.length > 0){
           this.cases = []; this.recovered = []; this.deaths = []
@@ -111,7 +111,7 @@ export class WorldcountComponent implements OnInit {
         }
     }
     );
-    this.summary7daysSubscription = this.covidservice.summary7daysSubject.subscribe(
+    this.sum7daysSub = this.covidservice.sum7daysSub.subscribe(
       (data7days: number[][]) => {
         this.barChartData = [];
         this.barChartData = [
@@ -121,7 +121,7 @@ export class WorldcountComponent implements OnInit {
         ];
     }
     );
-    this.summaryFromSubscription = this.covidservice.summaryFromSubject.subscribe(
+    this.sumFromSub = this.covidservice.sumFromSub.subscribe(
       (dataFrom: number[][]) => {
         this.lineChartData = [];
           var today = (new Date()).toISOString().slice(0,10)
@@ -136,7 +136,7 @@ export class WorldcountComponent implements OnInit {
     }
     );
 
-    this.covidservice.getCountries();
+    this.covidservice.get_data_Countries();
     this.barChartLabels = [];
     var d = new Date();
     for (var i = 0; i < 7; i++) {
@@ -151,7 +151,7 @@ export class WorldcountComponent implements OnInit {
       const today = new Date()
       if(summary == undefined){
           console.log("need to update db")
-          this.covidservice.getSummary();
+          this.covidservice.get_total_Summary();
       }
       else{
         const last_update = new Date(summary["date"])
@@ -168,7 +168,7 @@ export class WorldcountComponent implements OnInit {
         else{
         
           console.log("need to update db - not up to date")
-          this.covidservice.getSummary();
+          this.covidservice.get_total_Summary();
         }
       }
     }
@@ -177,8 +177,8 @@ export class WorldcountComponent implements OnInit {
     )
     var day1 = (d.toISOString().slice(0,10));
     var day7 = (new Date()).toISOString().slice(0,10);
-    this.covidservice.getSummary7days(day1, day7);
-    this.covidservice.getSummaryFrom();
+    this.covidservice.get_total_Summary7days(day1, day7);
+    this.covidservice.get_total_SummaryFrom();
     this.getNews()
     .subscribe((news: News[]) =>{
       this.news = news;
@@ -258,7 +258,7 @@ sort(direction,col){
     break;
   }
 }
-go_to_country(country){
+gcountry(country){
   this.router.navigate(["count-by-country/"+country]);
 }
 gotoworldnews(){
