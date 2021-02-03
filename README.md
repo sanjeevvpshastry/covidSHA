@@ -25,3 +25,8 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Update Fiinal
+1. World News Component created and updated 
+2. Routing created from Worldcount page to redirect to the page on Add News button.
+3. Add News button appears only for user in the privilege user collection in cloud Firestore.
