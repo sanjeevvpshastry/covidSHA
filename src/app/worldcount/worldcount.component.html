@@ -4,7 +4,7 @@
       <h3>{{user.displayName}}</h3>
     </div>
     <div class="col-sm-6 text-right">
-      <button class="btn btn-danger" (click)="covidservice.signOut()">Sign out</button>
+      <button class="btn btn-danger" (click)="covidservice.signOut()">SignOut</button>
     </div>
   </div>
   
@@ -100,7 +100,7 @@
       </thead>
       <tbody>
         <tr  *ngFor="let country of countries">
-          <td style="background-color: #6c767d;color: white; cursor: pointer;" (click)="go_to_country(country.values[6])"> {{country.name}}</td>
+          <td style="background-color: #6c767d;color: white; cursor: pointer;" (click)="gcountry(country.values[6])"> {{country.name}}</td>
           <td style="text-align: right;background-color: #fde29d"> {{country.values[0] | number}}</td>
           <td style="text-align: right;background-color: #fde29d"> {{country.values[1] | number}}</td>
           <td style="text-align: right;background-color: #87c7f3"> {{country.values[2] | number}}</td>
@@ -123,10 +123,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let newss of news">
-          <td> {{newss.date.toDate() | date}}</td>
-          <td> {{newss.username}}</td>
-          <td> {{newss.description}}</td>
+        <tr *ngFor="let news1 of news">
+          <td> {{news1.date.toDate() | date}}</td>
+          <td> {{news1.username}}</td>
+          <td> {{news1.description}}</td>
         </tr>
       </tbody>
     </table>
