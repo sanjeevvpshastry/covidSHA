@@ -16,7 +16,6 @@ import { SingleDataSet, Label, monkeyPatchChartJsLegend, monkeyPatchChartJsToolt
 })
 export class WorldnewsComponent implements OnInit {
   description: string="";
-
   user: User;
   country_news = 'world';
   constructor(public covidservice:CovidService, private router: Router, private firestore: AngularFirestore) { 
