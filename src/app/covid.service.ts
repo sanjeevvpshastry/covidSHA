@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { User } from './user_mod';
 import { Subject } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { News } from './news.model';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -12,15 +13,17 @@ import { HttpClient } from '@angular/common/http';
 })
 export class CovidService {
 
+  description: string="";
+  country_news = 'world';
   private user: User
   URL_basic = 'https://api.covid19api.com';
-  summarySubject = new Subject<number[]>();
-  summaryCountrySubject = new Subject<{name: string, values:number[]}>();
-  summary7daysSubject = new Subject<number[][]>();
-  summaryFromSubject = new Subject<number[][]>();
-  countriesSubject = new Subject<{name: string, values:number[]}[]>();
-  countrySubject = new Subject<string[]>();
-  countriesData: {name: string, values:number[]}[] = [];
+  sumsub = new Subject<number[]>();
+  CountrySumSub = new Subject<{name: string, values:number[]}>();
+  sum7daysSub = new Subject<number[][]>();
+  sumFromSub = new Subject<number[][]>();
+  countriesSub = new Subject<{name: string, values:number[]}[]>();
+  countrySub = new Subject<string[]>();
+  countries_Data: {name: string, values:number[]}[] = [];
   summary : number[]= [];
   summary7days : number[][]= [[],[],[]];
   summaryFrom : number[][]= [[],[],[],[]];
@@ -34,10 +37,10 @@ export class CovidService {
       email: credentials.user.email
     };
     localStorage.setItem("user",JSON.stringify(this.user));
-    this.updateUserData( );
+    this.update_UserData( );
     this.router.navigate(["worldcount"]);
   }
-  private updateUserData(){
+  private update_UserData(){
     this.firestore.collection("users").doc(this.user.uid).set({
       uid: this.user.uid,
       displayName: this.user.displayName,
@@ -60,16 +63,16 @@ export class CovidService {
     this.router.navigate(["signin"]);
   }
 
-  public getCountries(){
-    this.countriesData = []
+  public get_data_Countries(){
+    this.countries_Data = []
     this.httpClient
     .get<any[]>(this.URL_basic + '/summary')
       .subscribe(
         (response) => {
           for (const country of response["Countries"]){
-            this.countriesData.push({name: country["Country"], values:[country["NewConfirmed"],country["TotalConfirmed"],country["NewRecovered"],country["TotalRecovered"],country["NewDeaths"],country["TotalDeaths"],country["Slug"]]});
+            this.countries_Data.push({name: country["Country"], values:[country["NewConfirmed"],country["TotalConfirmed"],country["NewRecovered"],country["TotalRecovered"],country["NewDeaths"],country["TotalDeaths"],country["Slug"]]});
           }
-          this.countriesSubject.next(this.countriesData);
+          this.countriesSub.next(this.countries_Data);
         },
         (error: any) => {
           console.log(error);
@@ -77,7 +80,7 @@ export class CovidService {
         }
     );
   }
-  public getSummary(country='all'){
+  public get_total_Summary(country='all'){
     this.summary = [];
     console.log(country)
     this.httpClient
@@ -93,7 +96,7 @@ export class CovidService {
           this.summary[7]=response["Global"]["NewDeaths"];
           this.summary[8]=this.summary[6]/this.summary[0];
           this.summary[2]=this.summary[0]-this.summary[3];
-          this.summarySubject.next(this.summary);
+          this.sumsub.next(this.summary);
           return;
         },
         (error: any) => {
@@ -102,7 +105,7 @@ export class CovidService {
         }
     );
   }
-  public getSummaryCountry(country='all'){
+  public get_total_SummaryCountry(country='all'){
     this.summary = [];
     console.log(country)
     this.httpClient
@@ -121,7 +124,7 @@ export class CovidService {
               this.summary[8]=this.summary[6]/this.summary[0];
               this.summary[2]=this.summary[0]-this.summary[3];
               console.log(this.summary);
-              this.summaryCountrySubject.next({name:country, values: this.summary});
+              this.CountrySumSub.next({name:country, values: this.summary});
               return;
             }
           }
@@ -140,7 +143,7 @@ export class CovidService {
     return ((x < y) ) ? -1 : (((x > y) ? 1 : 0));
   });
   }
-  public getSummary7days(day1,day7, countrySlug='all'){
+  public get_total_Summary7days(day1,day7, countrySlug='all'){
   
     this.summary7days = [[],[],[]];
     if(countrySlug=='all'){
@@ -155,7 +158,7 @@ export class CovidService {
             this.summary7days[1].push(d["NewRecovered"]);
             this.summary7days[2].push(d["NewConfirmed"]);
           }
-          this.summary7daysSubject.next(this.summary7days);
+          this.sum7daysSub.next(this.summary7days);
           return;
         }
         },
@@ -182,7 +185,7 @@ export class CovidService {
               a = d
               if(i==0){i=i+1; continue;}
           }
-          this.summary7daysSubject.next(this.summary7days);
+          this.sum7daysSub.next(this.summary7days);
         },
         (error: any) => {
           console.log(error);
@@ -191,7 +194,7 @@ export class CovidService {
     );
       }
   }
-  public getCountry(countrySlug: string){
+  public get_Country(countrySlug: string){
     this.httpClient
       .get<any[]>(this.URL_basic + '/countries')
       .subscribe(
@@ -199,7 +202,7 @@ export class CovidService {
           console.log(response)
           for (const d of response){
             if(d["Slug"] == countrySlug){
-              this.countrySubject.next([d["Country"],d["ISO2"]]);
+              this.countrySub.next([d["Country"],d["ISO2"]]);
               return;
             }
           }
@@ -212,7 +215,7 @@ export class CovidService {
         }
     );
   }
-  public getSummaryFrom(countrySlug='all', day1 = '2020-04-13'){
+  public get_total_SummaryFrom(countrySlug='all', day1 = '2020-04-13'){
     this.summaryFrom[0]=[];this.summaryFrom[1]=[];this.summaryFrom[2]=[];this.summaryFrom[3]=[];
     var today = (new Date()).toISOString().slice(0,10)
     if(countrySlug == 'all'){
@@ -226,7 +229,7 @@ export class CovidService {
               this.summaryFrom[1].push(d["TotalRecovered"]);
               this.summaryFrom[2].push(d["TotalConfirmed"]);
             }
-            this.summaryFromSubject.next(this.summaryFrom);
+            this.sumFromSub.next(this.summaryFrom);
             return;
           },
           (error: any) => {
@@ -246,7 +249,7 @@ export class CovidService {
             this.summaryFrom[2].push(d["Confirmed"]);
             this.summaryFrom[3].push(d["Date"]);
           }
-          this.summaryFromSubject.next(this.summaryFrom);
+          this.sumFromSub.next(this.summaryFrom);
         },
         (error: any) => {
           console.log(error);
