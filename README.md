@@ -30,3 +30,4 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 1. World News Component created and updated 
 2. Routing created from Worldcount page to redirect to the page on Add News button.
 3. Add News button appears only for user in the privilege user collection in cloud Firestore.
+4. This add news adds worldwide news whereas for individual country, you go into that specific country and add news in the space provided
