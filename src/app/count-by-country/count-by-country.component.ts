@@ -79,12 +79,12 @@ export class CountByCountryComponent implements OnInit {
   ngOnInit(): void {
     this.checkURI();
     this.user = this.covidservice.getUser();
-    this.countriesSubscription = this.covidservice.countriesSubject.subscribe(
+    this.countriesSubscription = this.covidservice.countriesSub.subscribe(
       (data: {name: string, values:number[]}[]) => {
         this.countries = data;
       }
     )
-    this.countrySubscription = this.covidservice.countrySubject.subscribe(
+    this.countrySubscription = this.covidservice.countrySub.subscribe(
       (data: string[]) => {
         this.country = data[0];
         this.countryCode = data[1];
@@ -94,7 +94,7 @@ export class CountByCountryComponent implements OnInit {
         }
       }
     )
-   this.summarySubscription = this.covidservice.summaryCountrySubject.subscribe(
+   this.summarySubscription = this.covidservice.CountrySumSub.subscribe(
     (data: {name: string, values:number[]}) => {
         if(data.values.length > 0){
           if(this.num_times3==0 && this.countrySlug==data.name){
@@ -123,7 +123,7 @@ export class CountByCountryComponent implements OnInit {
         }
     }
     );
-    this.summary7daysSubscription = this.covidservice.summary7daysSubject.subscribe(
+    this.summary7daysSubscription = this.covidservice.sum7daysSub.subscribe(
       (data7days: number[][]) => {
         this.barChartData = [];
         this.barChartData = [
@@ -133,7 +133,7 @@ export class CountByCountryComponent implements OnInit {
         ];
     }
     );
-    this.summaryFromSubscription = this.covidservice.summaryFromSubject.subscribe(
+    this.summaryFromSubscription = this.covidservice.sumFromSub.subscribe(
       (dataFrom: number[][]) => {
         this.lineChartData = [];
           var today = (new Date()).toISOString().slice(0,10)
@@ -158,8 +158,8 @@ export class CountByCountryComponent implements OnInit {
     d.setDate(d.getDate()-1);
     var day0 = (d.toISOString().slice(0,10));
     var day7 = (new Date()).toISOString().slice(0,10);
-    this.covidservice.getSummary7days(day0, day7, this.countrySlug);
-    this.covidservice.getSummaryFrom(this.countrySlug);
+    this.covidservice.get_total_Summary7days(day0, day7, this.countrySlug);
+    this.covidservice.get_total_SummaryFrom(this.countrySlug);
     this.getNews().subscribe((news: News[]) =>{
       this.news = news;
       this.news.sort((a, b) => (a.date > b.date ? -1 : 1));
@@ -192,7 +192,7 @@ export class CountByCountryComponent implements OnInit {
         this.router.navigate(["worldcount"]);
       }else{
         this.countrySlug = href.split('/')[2];
-        this.covidservice.getCountry(this.countrySlug);
+        this.covidservice.get_Country(this.countrySlug);
       }
     }
   }
@@ -221,7 +221,7 @@ checkFireStore(){
     const today = new Date()
     if(summary == undefined){
         console.log("need to update db")
-        this.covidservice.getSummaryCountry(this.countrySlug);
+        this.covidservice.get_total_SummaryCountry(this.countrySlug);
     }
     else{
       const last_update = new Date(summary["date"])
@@ -238,7 +238,7 @@ checkFireStore(){
       }
       else{
         console.log("need to update db - not up to date")
-        this.covidservice.getSummaryCountry(this.countrySlug);
+        this.covidservice.get_total_SummaryCountry(this.countrySlug);
       }
     }
   }
