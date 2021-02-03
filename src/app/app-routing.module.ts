@@ -11,8 +11,8 @@ const routes: Routes = [
   {path: "signin", component: SigninComponent,canActivate: [SecurePagesGuard]},
   {path:"worldcount", component: WorldcountComponent,canActivate:[AuthGuard]},
   {path: "count-by-country",children:[{path: "**", component: CountByCountryComponent, canActivate: [AuthGuard]}]},
-  {path: "worldnews",component: WorldnewsComponent},
-  {path:"", pathMatch:"full", redirectTo:"signin"},
+  {path: "worldnews",component: WorldnewsComponent, canActivate:[AuthGuard]},
+  {path:"", pathMatch:"full", redirectTo:"signin",canActivate: [AuthGuard]},
   {path:"**", redirectTo:"signin"}
 
 ];
