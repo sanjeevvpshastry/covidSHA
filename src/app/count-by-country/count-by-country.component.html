@@ -97,7 +97,7 @@
     <div class="col-12">
       <label for="descriptionInput"> Latest News</label>
       <input type="text" id="descriptionInput" required [(ngModel)]="description" name="descriptionInput" class="form-control"
-      placeholder="What news do you want to add?">
+      placeholder="The news you want to add is only for this country">
     </div>
   </div>
   <button [disabled]="description.length == 0" class="btn btn-primary" (click)="addNews()">Add</button>
@@ -114,10 +114,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let newss of news">
-          <td> {{newss.date.toDate() | date}}</td>
-          <td> {{newss.username}}</td>
-          <td> {{newss.description}}</td>
+        <tr *ngFor="let news1 of news">
+          <td> {{news1.date.toDate() | date}}</td>
+          <td> {{news1.username}}</td>
+          <td> {{news1.description}}</td>
         </tr>
       </tbody>
     </table>
